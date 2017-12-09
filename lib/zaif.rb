@@ -8,6 +8,7 @@ require 'time'
 
 require "zaif/version"
 require "zaif/exceptions"
+require 'websocket-client-simple'
 
 module Zaif
     class API
@@ -65,7 +66,7 @@ module Zaif
         #
         # Trade API
         #
-        
+
         # Get user infomation.
         # Need api key.
         # @return [Hash] Infomation of user.
@@ -73,11 +74,11 @@ module Zaif
             json = post_ssl(@zaif_trade_url, "get_info", {})
             return json
         end
-        
+
         # Get your trade history.
         # Avalible options: from. count, from_id, end_id, order, since, end, currency_pair
         # Need api key.
-        # @param [Hash] 
+        # @param [Hash]
         def get_my_trades(option = {})
             json = post_ssl(@zaif_trade_url, "trade_history", option)
             # Convert to datetime
@@ -137,6 +138,25 @@ module Zaif
             option["amount"] = amount
             json = post_ssl(@zaif_trade_url, "withdraw", option)
             return json
+        end
+
+        def stream(currency_code, counter_currency_code = "jpy", output_filename = nil)
+            f = if output_filename.nil?
+                    STDOUT
+                else
+                    File.open(output_filename, 'a')
+                end
+            ws = WebSocket::Client::Simple.connect "wss://ws.zaif.jp:8888/stream?currency_pair=#{currency_code}_#{counter_currency_code}"
+            ws.on :message do |msg|
+                 f.puts msg.data + "\n"
+            end
+
+            ws.on :close do |e|
+              f.close unless output_filename.nil?
+            end
+
+            loop do
+            end
         end
 
         #
@@ -228,6 +248,6 @@ module Zaif
                 sleep(@cool_down_time)
             end
         end
-        
+
     end
 end
