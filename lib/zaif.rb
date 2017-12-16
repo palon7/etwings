@@ -11,12 +11,17 @@ require "zaif/exceptions"
 
 module Zaif
     class API
+        DEFAULT_OPEN_TIMEOUT = 5
+        DEFAULT_READ_TIMEOUT = 15
+
         def initialize(opt = {})
             @cool_down = opt[:cool_down] || true
             @cool_down_time = opt[:cool_down_time] || 2
             @cert_path = opt[:cert_path] || nil
             @api_key = opt[:api_key] || nil
             @api_secret = opt[:api_secret] || nil
+            @open_timeout = opt[:open_timeout] || DEFAULT_OPEN_TIMEOUT
+            @read_timeout = opt[:read_timeout] || DEFAULT_READ_TIMEOUT
             @zaif_public_url = "https://api.zaif.jp/api/1/"
             @zaif_trade_url = "https://api.zaif.jp/tapi"
         end
@@ -157,8 +162,8 @@ module Zaif
             begin
                 https = Net::HTTP.new(uri.host, uri.port)
                 https.use_ssl = true
-                https.open_timeout = 5
-                https.read_timeout = 15
+                https.open_timeout = @open_timeout
+                https.read_timeout = @read_timeout
                 https.verify_mode = OpenSSL::SSL::VERIFY_PEER
                 https.verify_depth = 5
 
@@ -195,8 +200,8 @@ module Zaif
 
                 https = Net::HTTP.new(uri.host, uri.port)
                 https.use_ssl = true
-                https.open_timeout = 5
-                https.read_timeout = 15
+                https.open_timeout = @open_timeout
+                https.read_timeout = @read_timeout
                 https.verify_mode = OpenSSL::SSL::VERIFY_PEER
                 https.verify_depth = 5
 
