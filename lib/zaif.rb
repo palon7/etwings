@@ -62,6 +62,13 @@ module Zaif
             return json
         end
 
+        # Get currencies of *currency_code*
+        # @param [String]  currency_code Base     currency code
+        def get_currencies(currency_code)
+            json = get_ssl(@zaif_public_url + "currencies/" + currency_code)
+            return json
+        end
+        
         #
         # Trade API
         #
