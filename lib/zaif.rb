@@ -62,6 +62,18 @@ module Zaif
             return json
         end
 
+        # Get currency pairs of *currency_code* / *counter_currency_code*.
+        # @param [String]  currency_code Base     currency code
+        # @param [String]  counter_currency_code  Counter currency code
+        def get_currency_pairs(currency_code, counter_currency_code = "jpy")
+            currency_pair = currency_code
+            unless currency_code=='all'
+              currency_pair += "_" + counter_currency_code
+            end
+            json = get_ssl(@zaif_public_url + "currency_pairs/" + currency_pair)
+            return json
+        end
+        
         #
         # Trade API
         #
