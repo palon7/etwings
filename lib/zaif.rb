@@ -87,6 +87,20 @@ module Zaif
 
             return json
         end
+        
+        # Get your deposit history.
+        # Avalible options: currency, from, count, from_id, end_id, order, since, end
+        # Need api key.
+        # @param [Hash] 
+        def get_deposit_history(option = {})
+          json = post_ssl(@zaif_trade_url, "deposit_history", option)
+          # Convert to datetime
+          json.each do|k, v|
+              v["datetime"] = Time.at(v["timestamp"].to_i)
+          end
+
+          return json
+        end
 
         # Get your active orders.
         # Avalible options: currency_pair
