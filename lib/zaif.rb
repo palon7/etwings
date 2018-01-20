@@ -124,8 +124,9 @@ module Zaif
 
         # Cancel order.
         # Need api key.
-        def cancel(order_id)
-            json = post_ssl(@zaif_trade_url, "cancel_order", {:order_id => order_id})
+        def cancel(order_id, option = {})
+            option["order_id"] = order_id
+            json = post_ssl(@zaif_trade_url, "cancel_order", option)
             return json
         end
 
